@@ -69,6 +69,10 @@ public class HelloApplication extends Application {
         }
     }
 
+    /**
+     * crée une sortie
+     * @param r la racine
+     */
     public void faireSortie(Pane r){
         Sortie sortie = laby.getSortie();
         int sortie_x = sortie.getX()*TAILLE;
