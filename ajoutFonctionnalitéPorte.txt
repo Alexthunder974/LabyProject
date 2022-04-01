@@ -1,0 +1,40 @@
+Ajouts dans le jeu :
+
+Faire des portes avec des boutons/intérupteurs
+
+XXXXXXX
+XP...*X
+X...XXX
+X...#SX
+XXXXXXX
+
+Une Porte : 
+position x, y
+reliée à un Bouton
+
+Un Bouton :
+position x, y
+boolean activé
+
+Attribut Labyrinthe :
+-Porte
+
+
+Méthodes à ajouter/modifier :
+
+Dans Porte : #
+boolean etreOuvert()
+
+Dans Bouton : *
+void activéBouton()
+void eteindreBouton()
+
+Dans labyrinthe :
+methode getSuivant :
+-si le perso va sur un bouton, 
+le bouton est activé si il est éteint et est éteint si il est activé
+
+methode deplacerPersonnage :
+-Le perso s'arrete si il est devant une porte fermé, passe à travers la porte si ouverte
+
+

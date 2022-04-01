@@ -24,8 +24,6 @@ public class Labyrinthe {
     private Personnage personnage;
     private Sortie sortie;
 
-    public static int [] Entree;
-
     //méthodes
 
     /**
@@ -146,23 +144,6 @@ public class Labyrinthe {
 
     }
 
-    /**
-     *
-     * @return Coordonée entrée
-     * je ne sais pas trop si on devrait faire ça dans charger labyrinthe mais bon... a voir ce que t'en penses
-     */
-    public int[] getDepart(){
-        for (int f=0; f<murs.length; f++){
-            for(int c=0; c < murs[f].length; c++){
-                if(getChar(f,c) == PJ) {
-                    Entree[0] = f;
-                    Entree[1] = c;
-                    break;
-                }
-            }
-        }
-        return Entree;
-    }
 
     /**
      * methode chargerLabyrinthe qui permet d'instancier toutes les valeurs d'un labyrinthe, depuis un fichier texte
