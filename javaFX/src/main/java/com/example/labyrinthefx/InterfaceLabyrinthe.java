@@ -1,11 +1,10 @@
 package com.example.labyrinthefx;
 
-import javafx.animation.Interpolator;
 import javafx.animation.TranslateTransition;
 import javafx.application.Application;
-import javafx.css.StyleOrigin;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -21,11 +20,13 @@ import javafx.util.Duration;
 
 import java.io.IOException;
 
-public class HelloApplication extends Application {
+public class InterfaceLabyrinthe extends Application {
     public static final int TAILLE = 40;
-    public static final String nomLaby = "laby/laby2.txt";
+    public static final String nomLaby = "laby/laby3.txt";
     public static Labyrinthe laby = Labyrinthe.chargerLabyrinthe(nomLaby);
     public static final int MILLIS = 100;
+    public static final int LABY_Y = laby.getMurs().length;
+    public static final int LABY_X = laby.getMurs()[0].length;
 
     /**
      * methode qui crée un carré de dimension taille
@@ -101,8 +102,8 @@ public class HelloApplication extends Application {
         Circle perso = fairePersonnage();
         racine.getChildren().add(perso);
 
-        int taille_x = laby.getMurs().length;
-        int taille_y = laby.getMurs()[0].length;
+        int taille_x = LABY_Y;
+        int taille_y = LABY_X;
 
         Scene scene = new Scene(racine, TAILLE*taille_y, TAILLE*taille_x);
 
@@ -114,7 +115,11 @@ public class HelloApplication extends Application {
             int anciennePosX = laby.getPersonnage().getX();
             int anciennePosY = laby.getPersonnage().getY();
             //on récupère la valeur de la touche du clavier
-            switch(e.getCode()) {
+            KeyCode code = e.getCode();
+            if (laby.etreFini()){
+                code = KeyCode.getKeyCode("A");
+            }
+            switch(code) {
                 case UP:
                     try {
                         laby.deplacerPerso("haut");
@@ -148,31 +153,38 @@ public class HelloApplication extends Application {
                     deltaY = anciennePosY-laby.getPersonnage().getY();
                     break ;
                 default:
-                    deltaX = 0 ;
-                    deltaY = 0 ;
+                    deltaX = 0;
+                    deltaY = 0;
             }
-
             TranslateTransition animation_perso = new TranslateTransition();
             int temps;
-            if(deltaX != 0) {
+            if (deltaX != 0) {
                 temps = MILLIS * Math.abs(deltaX);
-            }
-            else{
+            } else {
                 temps = MILLIS * Math.abs(deltaY);
             }
-            if (temps > 400){
+            if (temps > 400) {
                 temps = 400;
             }
             animation_perso.setDuration(Duration.millis(temps));
 
             animation_perso.setNode(perso);
 
-            animation_perso.setByX(-deltaY*TAILLE);
-            animation_perso.setByY(-deltaX*TAILLE);
+            animation_perso.setByX(-deltaY * TAILLE);
+            animation_perso.setByY(-deltaX * TAILLE);
 
             animation_perso.play();
+
+            if (laby.etreFini()){
+                Text fini = new Text(TAILLE*LABY_Y/4,TAILLE*LABY_X/4,"Jeu Terminée");
+                fini.setFont(Font.font("Helvetica", FontWeight.BOLD, FontPosture.REGULAR, TAILLE));
+                racine.getChildren().add(fini);
+            }
+
         });
-        stage.setTitle("Hello!");
+        Image icon = new Image("file:img/Bidoof.png");
+        stage.getIcons().add(icon);
+        stage.setTitle("Labyrinthe ricochet");
         stage.setScene(scene);
         stage.show();
 
