@@ -21,12 +21,13 @@ import javafx.util.Duration;
 import java.io.IOException;
 
 public class InterfaceLabyrinthe extends Application {
-    public static final int TAILLE = 40;
-    public static final String nomLaby = "laby/laby3.txt";
+    public static int TAILLE = 40;
+    public static final String nomLaby = "laby/labyTest" + ".txt";
     public static Labyrinthe laby = Labyrinthe.chargerLabyrinthe(nomLaby);
-    public static final int MILLIS = 100;
+    public static final int MILLIS = 20;
     public static final int LABY_Y = laby.getMurs().length;
     public static final int LABY_X = laby.getMurs()[0].length;
+
 
     /**
      * methode qui crée un carré de dimension taille
@@ -87,10 +88,34 @@ public class InterfaceLabyrinthe extends Application {
 
     public Circle fairePersonnage(){
         Personnage perso = laby.getPersonnage();
-        Circle cercle_perso = new Circle(perso.getY()* TAILLE+(TAILLE/2), perso.getX()*TAILLE+(TAILLE/2), TAILLE/4, Color.RED);
-        return cercle_perso;
+
+        int perso_y = perso.getY() * TAILLE + (TAILLE / 2);
+        int perso_x = perso.getX() * TAILLE + (TAILLE / 2);
+        return new Circle(perso_y, perso_x, TAILLE/4, Color.BLUE);
     }
 
+    /**
+     * methode qui permet de dessiner une porte
+     * @return un objet Rectangle représentant une porte
+     */
+    public Rectangle fairePorte(){
+        Porte porte = laby.getPorte();
+        int porte_x = porte.getX()*TAILLE;
+        int porte_y = porte.getY()*TAILLE;
+        Rectangle case_porte = faireCase(porte_y, porte_x, TAILLE, Color.SANDYBROWN, Color.BEIGE);
+        return case_porte;
+    }
+
+    /**
+     * methode qui permet de dessiner un bouton
+     * @return un objet Circle qui représente un bouton
+     */
+    public Circle faireBouton(){
+        Bouton bouton = laby.getPorte().getBouton();
+        int bouton_x = bouton.getX()*TAILLE+(TAILLE/2);
+        int bouton_y = bouton.getY()*TAILLE+(TAILLE/2);
+        return new Circle(bouton_y, bouton_x, TAILLE/4, Color.RED);
+    }
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -99,6 +124,15 @@ public class InterfaceLabyrinthe extends Application {
         //création du terrain de jeu, de la sortie et du personnage
         fairePlateau(racine);
         faireSortie(racine);
+
+        Rectangle porte = null;
+        Circle bouton = null;
+        if (laby.getPorte() != null){
+            porte = fairePorte();
+            bouton = faireBouton();
+            racine.getChildren().addAll(porte, bouton);
+        }
+
         Circle perso = fairePersonnage();
         racine.getChildren().add(perso);
 
@@ -107,7 +141,12 @@ public class InterfaceLabyrinthe extends Application {
 
         Scene scene = new Scene(racine, TAILLE*taille_y, TAILLE*taille_x);
 
+        Rectangle finalPorte = porte;
+        Circle finalBouton = bouton;
         scene.addEventHandler(KeyEvent.KEY_PRESSED, e -> {
+            if (laby.etreFini()){
+                return;
+            }
             //les vecteurs pour déplacer le personnage
             int deltaX=0;
             int deltaY=0;
@@ -116,9 +155,6 @@ public class InterfaceLabyrinthe extends Application {
             int anciennePosY = laby.getPersonnage().getY();
             //on récupère la valeur de la touche du clavier
             KeyCode code = e.getCode();
-            if (laby.etreFini()){
-                code = KeyCode.getKeyCode("A");
-            }
             switch(code) {
                 case UP:
                     try {
@@ -175,6 +211,17 @@ public class InterfaceLabyrinthe extends Application {
 
             animation_perso.play();
 
+            if (laby.getPorte() != null){
+                if (laby.getPorte().etreOuvert()){
+                    finalPorte.setFill(Color.LIGHTGRAY);
+                    finalBouton.setFill(Color.LIGHTGREEN);
+                }
+                else{
+                    finalPorte.setFill(Color.SANDYBROWN);
+                    finalBouton.setFill(Color.RED);
+                }
+            }
+
             if (laby.etreFini()){
                 Text fini = new Text(TAILLE*LABY_Y/4,TAILLE*LABY_X/4,"Jeu Terminée");
                 fini.setFont(Font.font("Helvetica", FontWeight.BOLD, FontPosture.REGULAR, TAILLE));
@@ -182,6 +229,7 @@ public class InterfaceLabyrinthe extends Application {
             }
 
         });
+
         Image icon = new Image("file:img/Bidoof.png");
         stage.getIcons().add(icon);
         stage.setTitle("Labyrinthe ricochet");
@@ -191,6 +239,9 @@ public class InterfaceLabyrinthe extends Application {
     }
 
     public static void main(String[] args) {
+        if (LABY_X > 18 || LABY_Y > 25){
+            TAILLE = 30;
+        }
         launch();
     }
 }
