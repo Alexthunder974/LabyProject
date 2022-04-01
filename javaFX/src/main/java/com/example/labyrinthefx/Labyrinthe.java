@@ -26,9 +26,6 @@ public class Labyrinthe {
     private Personnage personnage;
     private Sortie sortie;
 
-    public static int [] Entree;
-
-
     //getters
 
     public boolean[][] getMurs() {
