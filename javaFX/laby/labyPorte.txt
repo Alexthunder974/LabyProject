@@ -1,0 +1,8 @@
+6
+6
+XXXXXX
+XP..*X
+X....X
+X..XXX
+X..#SX
+XXXXXX

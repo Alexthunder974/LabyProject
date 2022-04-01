@@ -14,6 +14,8 @@ public class Labyrinthe {
     public static final char PJ = 'P';
     public static final char SORTIE = 'S';
     public static final char VIDE = '.';
+    public static final char PORTE = '#';
+    public static final char BOUTON = '*';
 
     //constantes commandes
     public static final String HAUT = "Haut";
@@ -25,9 +27,7 @@ public class Labyrinthe {
     private boolean[][] murs; //vrai si il y a un mur, faux si case vide
     private Personnage personnage;
     private Sortie sortie;
-
-    public static int [] Entree;
-
+    private Porte porte;
 
     //getters
 
@@ -41,6 +41,10 @@ public class Labyrinthe {
 
     public Personnage getPersonnage() {
         return personnage;
+    }
+
+    public Porte getPorte() {
+        return porte;
     }
 
     //méthodes
@@ -63,12 +67,21 @@ public class Labyrinthe {
                 valeurCase = SORTIE;
             } else {
                 //si la case est vide
-                if (this.murs[x][y] == false) {
+                if (!this.murs[x][y]) {
                     valeurCase = VIDE;
                 }
                 //sinon la case est un mur
                 else {
                     valeurCase = MUR;
+                }
+                if (this.porte != null) {
+                    if (this.porte.getX() == x && this.porte.getY() == y) {
+                        valeurCase = PORTE;
+                    } else {
+                        if (this.porte.getBouton().getX() == x && this.porte.getBouton().getY() == y) {
+                            valeurCase = BOUTON;
+                        }
+                    }
                 }
             }
         }
@@ -90,23 +103,19 @@ public class Labyrinthe {
         if (direction.equalsIgnoreCase(HAUT)) {
             res[0] = x - 1;
             res[1] = y;
-        }
-        else{
+        } else {
             if (direction.equalsIgnoreCase(BAS)) {
                 res[0] = x + 1;
                 res[1] = y;
-            }
-            else{
+            } else {
                 if (direction.equalsIgnoreCase(GAUCHE)) {
                     res[0] = x;
                     res[1] = y - 1;
-                }
-                else{
+                } else {
                     if (direction.equalsIgnoreCase(DROITE)) {
                         res[0] = x;
                         res[1] = y + 1;
-                    }
-                    else{
+                    } else {
                         actionOk = false;
                     }
                 }
@@ -129,11 +138,28 @@ public class Labyrinthe {
         //tant que la case suivante dans la direction n'est pas un mur, deplacer le perso a la case suivante
         int[] caseSuivante = getSuivant(personnage.getX(), personnage.getY(), action);
         char valCase = getChar(caseSuivante[0], caseSuivante[1]);
-        while (valCase != MUR) {
+        boolean porteOuverte = true;
+        if (this.porte != null) {
+            if (this.porte.getX() == caseSuivante[0] && this.porte.getY() == caseSuivante[1]) {
+                porteOuverte = this.porte.etreOuvert();
+            }
+        }
+        while (valCase != MUR && porteOuverte) {
+            if (this.porte != null) {
+                //si on passe par le bouton, on l'active ou le désactive
+                if (this.porte.getBouton().getX() == caseSuivante[0] && this.porte.getBouton().getY() == caseSuivante[1]) {
+                    this.porte.getBouton().tournerBouton();
+                }
+            }
             personnage.setX(caseSuivante[0]);
             personnage.setY(caseSuivante[1]);
             caseSuivante = getSuivant(personnage.getX(), personnage.getY(), action);
             valCase = getChar(caseSuivante[0], caseSuivante[1]);
+            if (this.porte != null) {
+                if (this.porte.getX() == caseSuivante[0] && this.porte.getY() == caseSuivante[1]) {
+                    porteOuverte = this.porte.etreOuvert();
+                }
+            }
         }
     }
 
@@ -142,8 +168,8 @@ public class Labyrinthe {
 
         String res = "";
 
-        res += murs.length+"\n";
-        res += murs[0].length+"\n";
+        res += murs.length + "\n";
+        res += murs[0].length + "\n";
         for (int i = 0; i < murs.length; i++) {
             for (int j = 0; j < murs[i].length; j++) {
                 res += getChar(i, j);
@@ -165,9 +191,10 @@ public class Labyrinthe {
 
     /**
      * methode chargerLabyrinthe qui permet d'instancier toutes les valeurs d'un labyrinthe, depuis un fichier texte
+     *
      * @param nom le nom du fichier contenant le labyrinthe
      */
-    public static Labyrinthe chargerLabyrinthe(String nom){
+    public static Labyrinthe chargerLabyrinthe(String nom) {
         Labyrinthe labyrinthe = new Labyrinthe();
         //on ouvre un fichier texte (en Buffered pour lire les lignes) qui représente le labyrinthe
         BufferedReader fileLaby = null;
@@ -187,6 +214,8 @@ public class Labyrinthe {
         }
         labyrinthe.murs = new boolean[x][y];
 
+        int[] posPorte = new int[0];
+        int[] posBouton = new int[0];
         //on parcourt le fichier texte jusqu'à la fin pour remplir le tableau de boolean, murs
         String ligne = null;
         for (int i = 0; i < x; i++) {
@@ -197,21 +226,30 @@ public class Labyrinthe {
             }
             for (int j = 0; j < y; j++) {
                 char value = ligne.charAt(j);
-                if (value == MUR){
+                if (value == MUR) {
                     labyrinthe.murs[i][j] = true;
-                }
-                else{
+                } else {
                     labyrinthe.murs[i][j] = false;
-                    if(value == PJ){
-                        labyrinthe.personnage = new Personnage(i,j);
-                    }
-                    else {
-                        if (value == SORTIE){
-                            labyrinthe.sortie = new Sortie(i,j);
+                    if (value == PJ) {
+                        labyrinthe.personnage = new Personnage(i, j);
+                    } else {
+                        if (value == SORTIE) {
+                            labyrinthe.sortie = new Sortie(i, j);
+                        } else {
+                            if (value == PORTE) {
+                                posPorte = new int[]{i, j};
+                            } else {
+                                if (value == BOUTON) {
+                                    posBouton = new int[]{i, j};
+                                }
+                            }
                         }
                     }
                 }
             }
+        }
+        if (posBouton.length != 0 || posPorte.length != 0) {
+            labyrinthe.porte = new Porte(posPorte[0], posPorte[1], posBouton[0], posBouton[1]);
         }
         try {
             fileLaby.close();

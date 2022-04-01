@@ -5,7 +5,7 @@ import java.util.Scanner;
 public class MainLaby {
 
     public static void main(String[] args) throws ActionInconnueException {
-        String nomLaby = "laby/laby1.txt";
+        String nomLaby = "laby/labyPorte.txt";
         Labyrinthe laby = Labyrinthe.chargerLabyrinthe(nomLaby);
 
         //boite de dialogue avec le joueur
