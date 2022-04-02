@@ -1,0 +1,31 @@
+Méthode creerLabyrinthe
+
+public void creerLabyrinthe(int x, int y, String nom)
+Cette methode crée un laby aléatoirement
+
+
+Idées :
+-Faire un labyrinthe en utilisant des paternes déjà créés
+puis en choisir de facon aléatoire
+
+-Placer des murs aléatoirement, mais vérifier avec un algorithme si le labyrinthe peut être terminé
+
+
+
+
+
+Etapes :
+
+On ouvre un fichier NOM.txt en écriture par caractère
+On met x dans le fichier puis y
+
+On met y fois le cara X à la première ligne
+
+Pour les lignes suivantes on commence et on fini par X
+
+.
+.
+.
+.
+
+On met y fois le cara X à la dernière ligne

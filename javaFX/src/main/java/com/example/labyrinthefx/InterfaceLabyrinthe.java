@@ -22,9 +22,9 @@ import java.io.IOException;
 
 public class InterfaceLabyrinthe extends Application {
     public static final int TAILLE = 40;
-    public static final String nomLaby = "laby/laby3.txt";
+    public static final String nomLaby = "laby/laby2.txt";
     public static Labyrinthe laby = Labyrinthe.chargerLabyrinthe(nomLaby);
-    public static final int MILLIS = 100;
+    public static final int MILLIS = 20;
     public static final int LABY_Y = laby.getMurs().length;
     public static final int LABY_X = laby.getMurs()[0].length;
 
@@ -87,8 +87,9 @@ public class InterfaceLabyrinthe extends Application {
 
     public Circle fairePersonnage(){
         Personnage perso = laby.getPersonnage();
-        Circle cercle_perso = new Circle(perso.getY()* TAILLE+(TAILLE/2), perso.getX()*TAILLE+(TAILLE/2), TAILLE/4, Color.RED);
-        return cercle_perso;
+        int perso_y = perso.getY() * TAILLE + (TAILLE / 2);
+        int perso_x = perso.getX() * TAILLE + (TAILLE / 2);
+        return new Circle(perso_y, perso_x, TAILLE/4, Color.BLUE);
     }
 
 

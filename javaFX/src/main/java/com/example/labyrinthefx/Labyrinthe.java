@@ -1,9 +1,6 @@
 package com.example.labyrinthefx;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 
 /**
  * Classe labyrinthe qui représente le terrain de jeu
@@ -216,6 +213,23 @@ public class Labyrinthe {
             e.printStackTrace();
         }
         return labyrinthe;
+    }
+
+    /**
+     * methode qui permet de créer un labyrinthe pour le stocker dans un fichier txt
+     *
+     * @param x la taille x du labyrinthe
+     * @param y la taille y du labyrinthe
+     * @param nom le nom du fichier texte que l'on veut créer
+     */
+    public void creerLabyrinthe(int x, int y, String nom){
+        /*
+        FileWriter file = new FileWriter(nom);
+        file.write(x);
+        file.write(y);
+        file.write
+        
+         */
     }
 
 }
