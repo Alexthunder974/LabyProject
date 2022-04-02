@@ -22,7 +22,7 @@ import java.io.IOException;
 
 public class InterfaceLabyrinthe extends Application {
     public static int TAILLE = 40;
-    public static final String nomLaby = "laby/labyTest" + ".txt";
+    public static final String nomLaby = "laby/labyMath" + ".txt";
     public static Labyrinthe laby = Labyrinthe.chargerLabyrinthe(nomLaby);
     public static final int MILLIS = 20;
     public static final int LABY_Y = laby.getMurs().length;
