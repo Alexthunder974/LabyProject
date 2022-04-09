@@ -22,9 +22,9 @@ import java.io.IOException;
 
 public class InterfaceLabyrinthe extends Application {
     public static final int TAILLE = 40;
-    public static final String nomLaby = "laby/laby3.txt";
+    public static final String nomLaby = "laby/laby2.txt";
     public static Labyrinthe laby = Labyrinthe.chargerLabyrinthe(nomLaby);
-    public static final int MILLIS = 100;
+    public static final int MILLIS = 40;
     public static final int LABY_Y = laby.getMurs().length;
     public static final int LABY_X = laby.getMurs()[0].length;
 
@@ -87,7 +87,7 @@ public class InterfaceLabyrinthe extends Application {
 
     public Circle fairePersonnage(){
         Personnage perso = laby.getPersonnage();
-        Circle cercle_perso = new Circle(perso.getY()* TAILLE+(TAILLE/2), perso.getX()*TAILLE+(TAILLE/2), TAILLE/4, Color.RED);
+        Circle cercle_perso = new Circle(perso.getY()* TAILLE+(TAILLE/2), perso.getX()*TAILLE+(TAILLE/2), TAILLE/4, Color.BLUE);
         return cercle_perso;
     }
 
@@ -157,16 +157,8 @@ public class InterfaceLabyrinthe extends Application {
                     deltaY = 0;
             }
             TranslateTransition animation_perso = new TranslateTransition();
-            int temps;
-            if (deltaX != 0) {
-                temps = MILLIS * Math.abs(deltaX);
-            } else {
-                temps = MILLIS * Math.abs(deltaY);
-            }
-            if (temps > 400) {
-                temps = 400;
-            }
-            animation_perso.setDuration(Duration.millis(temps));
+
+            animation_perso.setDuration(Duration.millis(MILLIS));
 
             animation_perso.setNode(perso);
 
