@@ -23,6 +23,10 @@ public class Labyrinthe {
     private Personnage personnage;
     private Sortie sortie;
 
+    //Constante avec le nom de fichier de sauvegarde
+    public static final String NOM_BACKUP = "laby/mazeBackup.txt";
+
+
     //getters
 
     public boolean[][] getMurs() {
@@ -336,6 +340,42 @@ public class Labyrinthe {
             file.write(MUR);
         }
         file.close();
+    }
+
+    /**
+     * Méthode qui permet de sauvegarder un labyrinthe dans un fichier mazeBackup.txt
+     * @param nomLaby le nom de fichier du labyrinthe qu'on va sauvegarder
+     */
+    public static void sauvegarderLaby(String nomLaby) throws IOException {
+        // Le fichier source
+        File src = new File(nomLaby);
+        // Le fichier destination
+        File dest = new File(NOM_BACKUP);
+        // Créer l'objet File Reader
+        FileReader fr = null;
+        try {
+            fr = new FileReader(src);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        // Créer l'objet BufferedReader
+        BufferedReader br = new BufferedReader(fr);
+        // Créer l'objet File Writer
+        FileWriter fw = null;
+        try {
+            fw = new FileWriter(dest, true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String str = null;
+        // Copie le contenu dans le nouveau fichier
+        while((str = br.readLine()) != null)
+        {
+            fw.write(str);
+            fw.write("\n");
+            fw.flush();
+        }
+        fw.close();
     }
 
 }

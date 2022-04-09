@@ -2,7 +2,10 @@ package com.example.labyrinthefx;
 
 import javafx.animation.TranslateTransition;
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -22,7 +25,7 @@ import java.io.IOException;
 
 public class InterfaceLabyrinthe extends Application {
     public static final int TAILLE = 40;
-    public static final String NOM_LABY = "laby_test.txt";
+    public static final String NOM_LABY = "laby/laby_test.txt";
     public static Labyrinthe laby;
 
     static {
@@ -101,6 +104,18 @@ public class InterfaceLabyrinthe extends Application {
         return new Circle(perso_y, perso_x, TAILLE/4, Color.BLUE);
     }
 
+    public void faireFinJeu(Pane r){
+        int x = TAILLE * LABY_Y / 4;
+        int y = TAILLE * LABY_X / 4;
+        Text fini = new Text(x, y,"Jeu Terminée");
+        fini.setFont(Font.font("Helvetica", FontWeight.BOLD, FontPosture.REGULAR, TAILLE));
+        fini.setFill(Color.WHITE);
+        Rectangle backFini = new Rectangle(x-5, y-35, 260, 40);
+        backFini.setFill(Color.GRAY);
+        backFini.setArcHeight(10.0d);
+        backFini.setArcWidth(10.0d);
+        r.getChildren().addAll(backFini, fini);
+    }
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -186,16 +201,36 @@ public class InterfaceLabyrinthe extends Application {
             animation_perso.play();
 
             if (laby.etreFini()){
-                int x = TAILLE * LABY_Y / 4;
-                int y = TAILLE * LABY_X / 4;
-                Text fini = new Text(x, y,"Jeu Terminée");
-                fini.setFont(Font.font("Helvetica", FontWeight.BOLD, FontPosture.REGULAR, TAILLE));
-                fini.setFill(Color.WHITE);
-                Rectangle backFini = new Rectangle(x-5, y-35, 260, 40);
-                backFini.setFill(Color.GRAY);
-                backFini.setArcHeight(10.0d);
-                backFini.setArcWidth(10.0d);
-                racine.getChildren().addAll(backFini, fini);
+                faireFinJeu(racine);
+                Button boutonFin = new Button("Sauvegarder Labyrinthe");
+                boutonFin.setTranslateX(TAILLE * LABY_Y / 4);
+                boutonFin.setTranslateY((TAILLE * LABY_Y / 4) + 100);
+                Button boutonGenerer = new Button("Générer nouveau labyrinthe");
+                boutonGenerer.setTranslateX(TAILLE * LABY_Y / 4);
+                boutonGenerer.setTranslateY((TAILLE * LABY_Y / 4) + 200);
+                racine.getChildren().addAll(boutonFin, boutonGenerer);
+
+                boutonFin.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent actionEvent) {
+                        try {
+                            Labyrinthe.sauvegarderLaby(NOM_LABY);
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                });
+
+                boutonGenerer.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent actionEvent) {
+                        try {
+                            Labyrinthe.creerLabyrinthe(15, 20, NOM_LABY);
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                });
             }
 
         });
@@ -208,7 +243,6 @@ public class InterfaceLabyrinthe extends Application {
     }
 
     public static void main(String[] args) throws IOException {
-        Labyrinthe.creerLabyrinthe(15, 20, NOM_LABY);
         launch();
     }
 }

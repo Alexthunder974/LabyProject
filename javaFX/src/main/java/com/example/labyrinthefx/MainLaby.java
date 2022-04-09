@@ -6,10 +6,16 @@ import java.util.Scanner;
 public class MainLaby {
 
     public static void main(String[] args) throws ActionInconnueException, FichierIncorrectException {
-        String nomLaby = "laby_test.txt";
+        String nomLaby = "laby/laby_test.txt";
 
         try {
             Labyrinthe.creerLabyrinthe(10, 10, nomLaby);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            Labyrinthe.sauvegarderLaby(nomLaby);
         } catch (IOException e) {
             e.printStackTrace();
         }
