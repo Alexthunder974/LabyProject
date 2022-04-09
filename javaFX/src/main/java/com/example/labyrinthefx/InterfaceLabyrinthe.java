@@ -2,10 +2,13 @@ package com.example.labyrinthefx;
 
 import javafx.animation.TranslateTransition;
 import javafx.application.Application;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
@@ -102,8 +105,7 @@ public class InterfaceLabyrinthe extends Application {
         Porte porte = laby.getPorte();
         int porte_x = porte.getX()*TAILLE;
         int porte_y = porte.getY()*TAILLE;
-        Rectangle case_porte = faireCase(porte_y, porte_x, TAILLE, Color.SANDYBROWN, Color.BEIGE);
-        return case_porte;
+        return faireCase(porte_y, porte_x, TAILLE, Color.SANDYBROWN, Color.BEIGE);
     }
 
     /**
@@ -120,6 +122,8 @@ public class InterfaceLabyrinthe extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         Pane racine = new Pane();
+        racine.setPadding(new Insets(10));
+        racine.setBackground(new Background(new BackgroundFill(Color.LIGHTPINK, null, null)));
 
         //création du terrain de jeu, de la sortie et du personnage
         fairePlateau(racine);
