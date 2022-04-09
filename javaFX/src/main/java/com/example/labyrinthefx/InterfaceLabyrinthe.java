@@ -24,7 +24,7 @@ public class InterfaceLabyrinthe extends Application {
     public static final int TAILLE = 40;
     public static final String nomLaby = "laby/laby2.txt";
     public static Labyrinthe laby = Labyrinthe.chargerLabyrinthe(nomLaby);
-    public static final int MILLIS = 40;
+    public static final int MILLIS = 20;
     public static final int LABY_Y = laby.getMurs().length;
     public static final int LABY_X = laby.getMurs()[0].length;
 
@@ -158,7 +158,16 @@ public class InterfaceLabyrinthe extends Application {
             }
             TranslateTransition animation_perso = new TranslateTransition();
 
-            animation_perso.setDuration(Duration.millis(MILLIS));
+            int temps;
+            if (deltaX != 0) {
+                temps = MILLIS * Math.abs(deltaX);
+            } else {
+                temps = MILLIS * Math.abs(deltaY);
+            }
+            if (temps > 400) {
+                temps = 400;
+            }
+            animation_perso.setDuration(Duration.millis(temps));
 
             animation_perso.setNode(perso);
 
