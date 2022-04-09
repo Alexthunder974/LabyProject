@@ -1,11 +1,19 @@
 package com.example.labyrinthefx;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 public class MainLaby {
 
-    public static void main(String[] args) throws ActionInconnueException {
-        String nomLaby = "laby/laby1.txt";
+    public static void main(String[] args) throws ActionInconnueException, FichierIncorrectException {
+        String nomLaby = "laby_test.txt";
+
+        try {
+            Labyrinthe.creerLabyrinthe(10, 10, nomLaby);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         Labyrinthe laby = Labyrinthe.chargerLabyrinthe(nomLaby);
 
         //boite de dialogue avec le joueur

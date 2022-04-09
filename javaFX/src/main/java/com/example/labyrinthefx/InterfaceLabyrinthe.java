@@ -22,11 +22,20 @@ import java.io.IOException;
 
 public class InterfaceLabyrinthe extends Application {
     public static final int TAILLE = 40;
-    public static final String nomLaby = "laby/laby2.txt";
-    public static Labyrinthe laby = Labyrinthe.chargerLabyrinthe(nomLaby);
+    public static final String NOM_LABY = "laby_test.txt";
+    public static Labyrinthe laby;
+
+    static {
+        try {
+            laby = Labyrinthe.chargerLabyrinthe(NOM_LABY);
+        } catch (FichierIncorrectException e) {
+            e.printStackTrace();
+        }
+    };
     public static final int MILLIS = 20;
     public static final int LABY_Y = laby.getMurs().length;
     public static final int LABY_X = laby.getMurs()[0].length;
+
 
     /**
      * methode qui crée un carré de dimension taille
@@ -177,9 +186,16 @@ public class InterfaceLabyrinthe extends Application {
             animation_perso.play();
 
             if (laby.etreFini()){
-                Text fini = new Text(TAILLE*LABY_Y/4,TAILLE*LABY_X/4,"Jeu Terminée");
+                int x = TAILLE * LABY_Y / 4;
+                int y = TAILLE * LABY_X / 4;
+                Text fini = new Text(x, y,"Jeu Terminée");
                 fini.setFont(Font.font("Helvetica", FontWeight.BOLD, FontPosture.REGULAR, TAILLE));
-                racine.getChildren().add(fini);
+                fini.setFill(Color.WHITE);
+                Rectangle backFini = new Rectangle(x-5, y-35, 260, 40);
+                backFini.setFill(Color.GRAY);
+                backFini.setArcHeight(10.0d);
+                backFini.setArcWidth(10.0d);
+                racine.getChildren().addAll(backFini, fini);
             }
 
         });
@@ -191,7 +207,8 @@ public class InterfaceLabyrinthe extends Application {
 
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+        Labyrinthe.creerLabyrinthe(15, 20, NOM_LABY);
         launch();
     }
 }
