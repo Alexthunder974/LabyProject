@@ -130,6 +130,13 @@ public class InterfaceLabyrinthe extends Application {
         int taille_x = LABY_Y;
         int taille_y = LABY_X;
 
+        Button boutonFin = new Button("Sauvegarder Labyrinthe");
+        boutonFin.setTranslateX(TAILLE * LABY_Y / 4);
+        boutonFin.setTranslateY((TAILLE * LABY_Y / 4) + 100);
+        Button boutonGenerer = new Button("Générer nouveau labyrinthe");
+        boutonGenerer.setTranslateX(TAILLE * LABY_Y / 4);
+        boutonGenerer.setTranslateY((TAILLE * LABY_Y / 4) + 200);
+
         Scene scene = new Scene(racine, TAILLE*taille_y, TAILLE*taille_x);
 
         scene.addEventHandler(KeyEvent.KEY_PRESSED, e -> {
@@ -202,12 +209,7 @@ public class InterfaceLabyrinthe extends Application {
 
             if (laby.etreFini()){
                 faireFinJeu(racine);
-                Button boutonFin = new Button("Sauvegarder Labyrinthe");
-                boutonFin.setTranslateX(TAILLE * LABY_Y / 4);
-                boutonFin.setTranslateY((TAILLE * LABY_Y / 4) + 100);
-                Button boutonGenerer = new Button("Générer nouveau labyrinthe");
-                boutonGenerer.setTranslateX(TAILLE * LABY_Y / 4);
-                boutonGenerer.setTranslateY((TAILLE * LABY_Y / 4) + 200);
+
                 racine.getChildren().addAll(boutonFin, boutonGenerer);
 
                 boutonFin.setOnAction(new EventHandler<ActionEvent>() {
@@ -225,7 +227,7 @@ public class InterfaceLabyrinthe extends Application {
                     @Override
                     public void handle(ActionEvent actionEvent) {
                         try {
-                            Labyrinthe.creerLabyrinthe(15, 20, NOM_LABY);
+                            Labyrinthe.creerLabyrinthe(10, 15, NOM_LABY);
                         } catch (IOException ex) {
                             ex.printStackTrace();
                         }
