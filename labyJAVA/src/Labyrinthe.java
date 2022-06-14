@@ -2,6 +2,9 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+
+import graphe.*;
 
 /**
  * Classe labyrinthe qui représente le terrain de jeu
@@ -120,6 +123,19 @@ public class Labyrinthe {
         }
     }
 
+    public int[] getSuivantSlide(int x, int y, String direction) throws ActionInconnueException {
+        int[] res = new int[2];
+        int[] caseSuivante = getSuivant(x, y, direction);
+        char valCase = getChar(caseSuivante[0], caseSuivante[1]);
+        while (valCase != MUR) {
+            res[0] = caseSuivante[0];
+            res[1] = caseSuivante[1];
+            caseSuivante = getSuivant(res[0], res[1], direction);
+            valCase = getChar(caseSuivante[0], caseSuivante[1]);
+        }
+        return res;
+    }
+
 
     public String toString() {
 
@@ -147,22 +163,23 @@ public class Labyrinthe {
     }
 
     /**
+     * return taille selon Y
      *
-     * @return Coordonée entrée
-     * je ne sais pas trop si on devrait faire ça dans charger labyrinthe mais bon... a voir ce que t'en penses
+     * @return
      */
-    public int[] getDepart(){
-        for (int f=0; f<murs.length; f++){
-            for(int c=0; c < murs[f].length; c++){
-                if(getChar(f,c) == PJ) {
-                    Entree[0] = f;
-                    Entree[1] = c;
-                    break;
-                }
-            }
-        }
-        return Entree;
+    public int getLengthY() {
+        return murs[0].length;
     }
+
+    /**
+     * return taille selon X
+     *
+     * @return
+     */
+    public int getLength() {
+        return murs.length;
+    }
+
 
     /**
      * methode chargerLabyrinthe qui permet d'instancier toutes les valeurs d'un labyrinthe, depuis un fichier texte
@@ -222,4 +239,53 @@ public class Labyrinthe {
         return labyrinthe;
     }
 
+    public GrapheListe genererGraphe() throws ActionInconnueException {
+        GrapheListe g = new GrapheListe();
+        //on parcours le labyrinthe en evitant la premiere ligne et la derniere ligne
+        //ainsi que la premiere colonne et la derniere colonne pour eviter les murs
+        for (int i = 1; i < getLength() - 1; i++) {
+            for (int j = 1; j < getLengthY() - 1; j++) {
+                if (!this.murs[i][j]) {
+                    for (int[] voisin : voisinsValides(i, j)) {
+                        g.ajouterArc("(" + i + "," + j + ")", "(" + voisin[0] + "," + voisin[1] + ")", 1);
+                    }
+                }
+            }
+        }
+
+
+        return g;
+    }
+
+
+    /**
+     * Methode qui donne les voisins valides de x,y
+     *
+     * @param x
+     * @param y
+     * @return
+     */
+    public ArrayList<int[]> voisinsValides(int x, int y) throws ActionInconnueException {
+
+        ArrayList<int[]> res = new ArrayList<int[]>();
+
+        //on recupere les positions des voisins
+        res.add(getSuivantSlide(x, y, GAUCHE));
+        res.add(getSuivantSlide(x, y, DROITE));
+        res.add(getSuivantSlide(x, y, HAUT));
+        res.add(getSuivantSlide(x, y, BAS));
+
+        //si la position est un mur on la supprime de la liste
+        res.removeIf(pos -> this.murs[pos[0]][pos[1]]);
+
+        return res;
+    }
+
+    public Personnage getPersonnage() {
+        return personnage;
+    }
+
+    public Sortie getSortie() {
+        return sortie;
+    }
 }
